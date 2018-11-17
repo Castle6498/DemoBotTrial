@@ -80,8 +80,17 @@ public class Constants extends ConstantsBase {
     // https://docs.google.com/spreadsheets/d/12_Mrd6xKmxCjKtsWNpWZDqT7ukrB9-1KKFCuRrO4aPM/edit#gid=0
 
     // Drive ports
-    public static final int kLeftDriveMasterPort = 0;
-    public static final int kRightDriveMasterPort = 1;
+    public static final int kLeftDriveDIOpwmPort = 0;
+    public static final int kLeftDriveEncoderAPort = 1;
+    public static final int kLeftDriveEncoderBPort = 2;
+    public static final int kLeftDriveDirectionpwmPort = 0;
+    
+    public static final int kRightDriveDIOpwmPort = 3;
+    public static final int kRightDriveEncoderAPort = 4;
+    public static final int kRightDriveEncoderBPort = 5;
+    public static final int kRightDriveDirectionpwmPort = 1;
+    
+    public static final int kDriveEnablepwmPort = 2;
     
     //FEEDER ------------------------------------------------------
     public static final int kFeederTriggerPort = 2; //trigger motor port

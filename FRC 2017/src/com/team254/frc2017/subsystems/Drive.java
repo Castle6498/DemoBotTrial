@@ -18,6 +18,7 @@ import com.team254.lib.util.control.Lookahead;
 import com.team254.lib.util.control.Path;
 import com.team254.lib.util.control.PathFollower;
 import com.team254.lib.util.drivers.NavX;
+import com.team254.lib.util.drivers.NidecBrushless;
 import com.team254.lib.util.drivers.NidecMotor;
 import com.team254.lib.util.math.RigidTransform2d;
 import com.team254.lib.util.math.Rotation2d;
@@ -52,10 +53,7 @@ public class Drive extends Subsystem {
         PATH_FOLLOWING, // used for autonomous driving
         TURN_TO_HEADING, // turn in place
     }
-
-    /**
-     * Check if the drive talons are configured for velocity control
-     */
+   /*
     protected static boolean usesTalonVelocityControl(DriveControlState state) {
         if (state == DriveControlState.VELOCITY_SETPOINT || state == DriveControlState.PATH_FOLLOWING) {
             return true;
@@ -63,16 +61,14 @@ public class Drive extends Subsystem {
         return false;
     }
 
-    /**
-     * Check if the drive talons are configured for position control
-     */
+ 
     protected static boolean usesTalonPositionControl(DriveControlState state) {
         if (state == DriveControlState.TURN_TO_HEADING ) {
 
             return true;
         }
         return false;
-    }
+    }*/
 
     // Control states
     private DriveControlState mDriveControlState;
@@ -81,7 +77,8 @@ public class Drive extends Subsystem {
    // private final CANTalon mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
    // private final Solenoid mShifter;
     
-    private final NidecMotor mLeftMaster, mRightMaster;
+    private final NidecBrushless mLeftMaster, mRightMaster;
+   
     
     private final NavX mNavXBoard;
 
@@ -144,8 +141,18 @@ public class Drive extends Subsystem {
     private Drive() {
         // Start all Talons in open loop mode.
         
-        mLeftMaster = new NidecMotor();
-        mRightMaster = new NidecMotor();
+        mLeftMaster = new NidecBrushless(
+                Constants.kDriveEnablepwmPort,
+                Constants.kLeftDriveDIOpwmPort,
+                Constants.kLeftDriveDirectionpwmPort,
+                Constants.kLeftDriveEncoderAPort,
+                Constants.kLeftDriveEncoderBPort);
+        mRightMaster = new NidecBrushless(
+                Constants.kDriveEnablepwmPort,
+                Constants.kRightDriveDIOpwmPort,
+                Constants.kRightDriveDirectionpwmPort,
+                Constants.kRightDriveEncoderAPort,
+                Constants.kRightDriveEncoderBPort);
         
         reloadGains();
        
@@ -169,8 +176,8 @@ public class Drive extends Subsystem {
      */
     public synchronized void setOpenLoop(DriveSignal signal) {
         if (mDriveControlState != DriveControlState.OPEN_LOOP) {
-            mLeftMaster.changeControlMode(NidecMotor.NidecControlMode.Only_PWM);
-            mRightMaster.changeControlMode(NidecMotor.NidecControlMode.Only_PWM);
+           // mLeftMaster.changeControlMode(NidecMotor.NidecControlMode.Only_PWM);
+           // mRightMaster.changeControlMode(NidecMotor.NidecControlMode.Only_PWM);
             
             mDriveControlState = DriveControlState.OPEN_LOOP;          
         }
@@ -234,11 +241,9 @@ public class Drive extends Subsystem {
     }
 
     public synchronized void resetEncoders() {
-        mLeftMaster.setEncPosition(0);
-        mLeftMaster.setPosition(0);
-        mRightMaster.setPosition(0);
-        mRightMaster.setEncPosition(0);     
-    }
+        mLeftMaster.resetDistance();
+        mRightMaster.resetDistance();
+     }
 
     @Override
     public void zeroSensors() {
