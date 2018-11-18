@@ -77,7 +77,7 @@ public class Constants extends ConstantsBase {
     // Do not change anything after this line unless you rewire the robot and
     // update the spreadsheet!
     // Port assignments should match up with the spreadsheet here:
-    // https://docs.google.com/spreadsheets/d/12_Mrd6xKmxCjKtsWNpWZDqT7ukrB9-1KKFCuRrO4aPM/edit#gid=0
+    // https://docs.google.com/spreadsheets/d/16Yat5u_Bs30ocKRlP4vNz9BPh5b0n9Pk_RTLPKM5GqE/edit#gid=1231815488
 
     // Drive ports
     public static final int kLeftDriveDIOpwmPort = 0;
@@ -93,7 +93,10 @@ public class Constants extends ConstantsBase {
     public static final int kDriveEnablepwmPort = 2;
     
     //FEEDER ------------------------------------------------------
-    public static final int kFeederTriggerPort = 2; //trigger motor port
+    public static final int kFeederTriggerOneMXPPort = 0; //trigger motor port
+    public static final int kFeederTriggerTwoMXPPort = 2;
+    
+    public static final int kFeederEnablepwmPort = 5;
     
     public static final int kFeederIRInitialPort = 0;  //ports for IR's
     public static final int kFeederIRFinalPort = 1;
@@ -118,9 +121,11 @@ public class Constants extends ConstantsBase {
     
     
     //INTAKE ------------------------------------------------------------
-    public static final int kIntakeRollerPort = 3;  //roller motor port
+    public static final int kIntakeRollerMXPPort = 4;  //roller motor port
+    public static final int kIntakeRollerEnable = 6;
     
-    public static final int kIntakeIRHopperPort = 2;  //hopper full IR port
+    
+    public static final int kIntakeIRHopperPort = 0;  //hopper full IR port
 
   //Threshold values for ir: (in volts i think)
     public static final double kIntakeRollerMax = 4.0;
@@ -136,8 +141,13 @@ public class Constants extends ConstantsBase {
     
     
     
+    //SHOOTER --------------------------------------------------------------
+    public static final int kShooterpwmPort = 3;
+    public static final int kShooterEncoderAPort = 4;
+    public static final int kShooterEncoderBPort = 5;
+    public static final int kShooterDirectionpwmPort = 1;
     
-    
+    public static final int kShooterEnablepwmPort = 2;
     
     
     
