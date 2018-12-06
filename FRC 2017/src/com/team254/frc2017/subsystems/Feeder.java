@@ -162,7 +162,7 @@ public class Feeder extends Subsystem {
         }else {
             setMotors(Constants.kFeederIncrementFeedPower);
         }
-        
+
         switch (mWantedState) {
         case INCREMENT_FEED:
             return newState;

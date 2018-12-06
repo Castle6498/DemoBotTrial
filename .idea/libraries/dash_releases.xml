@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="dash_releases">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v01.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v06.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v05.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v04.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v07.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v02.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v08.zip!/" />
+      <root url="jar://$PROJECT_DIR$/FRC 2017/dash_releases/dash_v03.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
