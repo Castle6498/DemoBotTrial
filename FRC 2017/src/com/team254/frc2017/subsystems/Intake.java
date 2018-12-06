@@ -11,7 +11,7 @@ import com.team254.lib.util.drivers.IRSensor;
  * The mechanism is also lowered by 2 servo linear actuators.
  * The main things this subsystem has to are intake fuel, unjam, and lower and raise the mechanism. 
  * 
- * @see Subsystem.java
+ * @see
  */
 public class Intake extends Subsystem {
     
