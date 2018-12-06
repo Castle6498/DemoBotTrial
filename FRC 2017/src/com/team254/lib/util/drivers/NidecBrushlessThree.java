@@ -69,7 +69,7 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
 	  return encoder.getRaw();
   }
   
-  public double getDistance() {
+  public double getPosition() {
 	  return encoder.getDistance();
   }
   
@@ -78,6 +78,14 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
   }
   public double getRate() {
 	 return encoder.getRate();
+  }
+
+  /**
+   *
+   * @return RPM of Encoder (hopefully :D)
+   */
+  public double getSpeed(){
+    return (encoder.getRate()*60)/(encoder.getDistancePerPulse()*100); //I dont know if this is right at all lol
   }
   
   /**

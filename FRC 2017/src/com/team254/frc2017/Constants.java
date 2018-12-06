@@ -93,8 +93,8 @@ public class Constants extends ConstantsBase {
     public static final int kDriveEnablepwmPort = 2;
     
     //FEEDER ------------------------------------------------------
-    public static final int kFeederTriggerOneMXPPort = 0; //trigger motor port
-    public static final int kFeederTriggerTwoMXPPort = 2;
+    public static final int kFeederTriggerOneMXPPort = 10; //trigger motor port
+    public static final int kFeederTriggerTwoMXPPort = 12;
     
     public static final int kFeederEnablepwmPort = 5;
     
@@ -121,7 +121,7 @@ public class Constants extends ConstantsBase {
     
     
     //INTAKE ------------------------------------------------------------
-    public static final int kIntakeRollerMXPPort = 4;  //roller motor port
+    public static final int kIntakeRollerMXPPort = 14 ;  //roller motor port
     public static final int kIntakeRollerEnable = 6;
     
     

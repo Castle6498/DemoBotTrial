@@ -21,7 +21,8 @@ import com.team254.lib.util.math.Rotation2d;
 import com.team254.lib.util.math.Twist2d;
 
 /**
- * This subsystem consists of the robot's drivetrain: 4 CIM motors, 4 talons, one solenoid and 2 pistons to shift gears,
+ * This subsystem consists of the robot's drivetrain: 4 HUGE SEXY THREE POINT THREE BRUSHLESS MOTORS MADE BY THE SEXY
+ * NIDEC COMPANY,
  * and a navX board. The Drive subsystem has several control methods including open loop, velocity control, and position
  * control. The Drive subsystem also has several methods that handle automatic aiming, autonomous path driving, and
  * manual control.
@@ -46,22 +47,7 @@ public class Drive extends Subsystem {
         PATH_FOLLOWING, // used for autonomous driving
         TURN_TO_HEADING, // turn in place
     }
-   /*
-    protected static boolean usesTalonVelocityControl(DriveControlState state) {
-        if (state == DriveControlState.VELOCITY_SETPOINT || state == DriveControlState.PATH_FOLLOWING) {
-            return true;
-        }
-        return false;
-    }
 
- 
-    protected static boolean usesTalonPositionControl(DriveControlState state) {
-        if (state == DriveControlState.TURN_TO_HEADING ) {
-
-            return true;
-        }
-        return false;
-    }*/
 
     // Control states
     private DriveControlState mDriveControlState;
@@ -256,22 +242,6 @@ public class Drive extends Subsystem {
         updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
     }
 
-    
-    private void configureTalonsForSpeedControl() {
-        if (!usesTalonVelocityControl(mDriveControlState)) {
-            
-        }
-    }
-
-    /**
-     * Configures talons for position control
-     */
-    private void configureTalonsForPositionControl() {
-        if (!usesTalonPositionControl(mDriveControlState)) {
-           
-        }
-    }
-    
 
     /**
      * Adjust Velocity setpoint (if already in velocity mode)
@@ -280,35 +250,30 @@ public class Drive extends Subsystem {
      * @param right_inches_per_sec
      */
     private synchronized void updateVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
-        if (usesTalonVelocityControl(mDriveControlState)) {
+
             final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
             final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
                     ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
             mLeftMaster.set(inchesPerSecondToRpm(left_inches_per_sec * scale));
             mRightMaster.set(inchesPerSecondToRpm(right_inches_per_sec * scale));
-        } else {
-            System.out.println("Hit a bad velocity control state");
-            mLeftMaster.set(0);
-            mRightMaster.set(0);
-        }
+
     }
+
+    /**
+     * TODO on all of these motor set points, you have to convert everything there, or add the whole set velocity, rpm thing to the NIDEC class
+     *
+     */
 
     /**
      * Adjust position setpoint (if already in position mode)
      * 
-     * @param left_inches_per_sec
-     * @param right_inches_per_sec
+     * @param left_position_inches
+     * @param right_position_inches
      */
     private synchronized void updatePositionSetpoint(double left_position_inches, double right_position_inches) {
-        if (usesTalonPositionControl(mDriveControlState)) {
             mLeftMaster.set(inchesToRotations(left_position_inches));
             mRightMaster.set(inchesToRotations(right_position_inches));
-        } else {
-            System.out.println("Hit a bad position control state");
-            mLeftMaster.set(0);
-            mRightMaster.set(0);
-        }
-    }
+       }
 
     private static double rotationsToInches(double rotations) {
         return rotations * (Constants.kDriveWheelDiameterInches * Math.PI);
@@ -371,6 +336,7 @@ public class Drive extends Subsystem {
             // keep position.
             return;
         }*/
+
         final Rotation2d field_to_robot = mRobotState.getLatestFieldToVehicle().getValue().getRotation();
 
         // Figure out the rotation necessary to turn to face the goal.
@@ -422,8 +388,7 @@ public class Drive extends Subsystem {
      */
     public synchronized void setWantTurnToHeading(Rotation2d heading) {
         if (mDriveControlState != DriveControlState.TURN_TO_HEADING) {
-            configureTalonsForPositionControl();
-            mDriveControlState = DriveControlState.TURN_TO_HEADING;
+           mDriveControlState = DriveControlState.TURN_TO_HEADING;
             updatePositionSetpoint(getLeftDistanceInches(), getRightDistanceInches());
         }
         if (Math.abs(heading.inverse().rotateBy(mTargetHeading).getDegrees()) > 1E-3) {
@@ -439,7 +404,6 @@ public class Drive extends Subsystem {
      */
     public synchronized void setWantDrivePath(Path path, boolean reversed) {
         if (mCurrentPath != path || mDriveControlState != DriveControlState.PATH_FOLLOWING) {
-            configureTalonsForSpeedControl();
             RobotState.getInstance().resetDistanceDriven();
             mPathFollower = new PathFollower(path, reversed,
                     new PathFollower.Parameters(

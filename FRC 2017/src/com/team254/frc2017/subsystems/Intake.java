@@ -4,6 +4,7 @@ import com.team254.frc2017.Constants;
 import com.team254.frc2017.loops.Loop;
 import com.team254.frc2017.loops.Looper;
 import com.team254.lib.util.drivers.IRSensor;
+import edu.wpi.first.wpilibj.NidecBrushless;
 
 /**
  * The feeder subsystem consists of a 3.3 Nidec Brushless motor used to intake balls from the ground
@@ -26,24 +27,23 @@ public class Intake extends Subsystem {
         return sInstance;
     }
 
-    private final NidecMotor mRoller;
+    private final NidecBrushless mRoller;
     private final IRSensor mIRAcross;
     
     public Intake() {
-        mRoller=new NidecMotor(Constants.kIntakeRollerPort);
-        mRoller.changeControlMode(NidecControlMode.Only_PWM);
-       
+        mRoller=new NidecBrushless(Constants.kIntakeRollerEnable, Constants.kIntakeRollerMXPPort);
+
         mIRAcross = new IRSensor(Constants.kIntakeIRHopperPort, Constants.kIntakeRollerMin, Constants.kIntakeRollerMax);
           
     }
 
-    public enum SystemState {
+    public static enum SystemState {
         ACCUMULATING, //feed a ball at a time
         UNJAMMING, //Reverses motors continuously
         IDLE, // stop all motors
     }   //lowering and raising just a separate thing
 
-    public enum WantedState {
+    public static enum WantedState {
         IDLE,
         UNJAM,
         INTAKE
