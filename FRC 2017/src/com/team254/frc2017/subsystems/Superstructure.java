@@ -136,7 +136,7 @@ public class Superstructure extends Subsystem {
                     newState = handleUnjamming();
                     break;
                 case JUST_INTAKE:
-                    newState = handleJustIntake();  //TODO make this method, there is already and existing handleJustFeed
+                    newState = handleJustIntake();
                     break;
                 case SHOOTING_SPIN_DOWN:
                     newState = handleShootingSpinDown(timestamp);
@@ -169,9 +169,6 @@ public class Superstructure extends Subsystem {
     private SystemState handleIdle(boolean stateChanged) {
         if (stateChanged) {
             stop();
-
-            mFeeder.setWantedState(Feeder.WantedState.IDLE);
-
         }
 
         switch (mWantedState) {
@@ -180,7 +177,9 @@ public class Superstructure extends Subsystem {
         case SHOOT:
             return SystemState.WAITING_FOR_FLYWHEEL;
         case MANUAL_FEED:
-            return SystemState.JUST_FEED;
+            return SystemState.MANUAL_FEED;
+        case INTAKE:
+            return SystemState.JUST_INTAKE;
         default:
             return SystemState.IDLE;
         }
@@ -189,22 +188,25 @@ public class Superstructure extends Subsystem {
     
 
     private SystemState handleWaitingForFlywheel() {
-        //mFeeder.setWantedState(Feeder.WantedState.FEED);        
-        //setWantIntakeOnForShooting();
+        mFeeder.setWantedState(Feeder.WantedState.FEED);
+        mIntake.setWantedState(Intake.WantedState.INTAKE);
 
-       /* if (autoSpinShooter(true)) {
+       if (autoSpinShooter(true)) {
             System.out.println(Timer.getFPGATimestamp() + ": making shot: Range: " + mLastGoalRange + " setpoint: "
                     + mShooter.getSetpointRpm());
 
             return SystemState.SHOOTING;
-        }*/
+        }
         switch (mWantedState) {
         case UNJAM:
             return SystemState.UNJAMMING;
         case SHOOT:
             return SystemState.WAITING_FOR_FLYWHEEL;
         case MANUAL_FEED:
-            return SystemState.JUST_FEED;
+            return SystemState.MANUAL_FEED;
+        case INTAKE:
+            return SystemState.JUST_INTAKE;
+            break;
         default:
             return SystemState.IDLE;
         }
@@ -233,12 +235,9 @@ public class Superstructure extends Subsystem {
         mShooterRpmBuffer.addValue(rpm);
 
         switch (mWantedState) {
-        case UNJAM_SHOOT:
-            return SystemState.UNJAMMING_WITH_SHOOT;
         case SHOOT:
-            if (!isOnTargetToKeepShooting()) {
-                return SystemState.WAITING_FOR_ALIGNMENT;
-            }
+
+
             boolean jam_detected = false;
             if (timestamp - mLastDisturbanceShooterTime > Constants.kShooterJamTimeout) {
                 // We have jammed, move to unjamming.
@@ -251,8 +250,9 @@ public class Superstructure extends Subsystem {
             } else {
                 return SystemState.SHOOTING;
             }
-        case RANGE_FINDING:
-            return SystemState.RANGE_FINDING;
+        case MANUAL_FEED:
+            return SystemState.MANUAL_FEED;
+            break;
         default:
             return SystemState.SHOOTING_SPIN_DOWN;
         }
@@ -274,18 +274,12 @@ public class Superstructure extends Subsystem {
             switch (mWantedState) {
             case UNJAM:
                 return SystemState.UNJAMMING;
-            case UNJAM_SHOOT:
-                return SystemState.UNJAMMING_WITH_SHOOT;
-            case SHOOT:
-                return SystemState.WAITING_FOR_ALIGNMENT;
+           case SHOOT:
+                return SystemState.WAITING_FOR_FLYWHEEL;
             case MANUAL_FEED:
-                return SystemState.JUST_FEED;
-            case EXHAUST:
-                return SystemState.EXHAUSTING;
-            case HANG:
-                return SystemState.HANGING;
-            case RANGE_FINDING:
-                return SystemState.RANGE_FINDING;
+                return SystemState.MANUAL_FEED;
+            case INTAKE:
+                return SystemState.JUST_INTAKE;
             default:
                 return SystemState.IDLE;
             }
@@ -294,9 +288,9 @@ public class Superstructure extends Subsystem {
     }
 
     private SystemState handleUnjamming() {
-        mShooter.stop();
+        mShooter.stop(); //TODO make shooter stop
 
-        mFeeder.setWantedState(Feeder.WantedState.UNJAM);
+       mFeeder.setWantedState(Feeder.WantedState.UNJAM);
        mIntake.setWantedState(Intake.WantedState.UNJAM);
 
         switch (mWantedState) {
@@ -305,78 +299,48 @@ public class Superstructure extends Subsystem {
         case SHOOT:
             return SystemState.WAITING_FOR_FLYWHEEL;
          case MANUAL_FEED:
-             return SystemState.WAITING_FOR_FLYWHEEL;
+             return SystemState.MANUAL_FEED;
         default:
             return SystemState.IDLE;
         }
     }
 
-    private SystemState handleJustFeed() {
-        mCompressor.setClosedLoopControl(false);
-        mFeeder.setWantedState(Feeder.WantedState.FEED);
-        mHopper.setWantedState(Hopper.WantedState.FEED);
-
-        mIntake.setOnWhileShooting();
+    private SystemState handleJustIntake() {
+       //TODO make shooter stop
+        mFeeder.setWantedState(Feeder.WantedState.CONTINUOUS_FEED);
+        mIntake.setWantedState(Intake.WantedState.INTAKE);
 
         switch (mWantedState) {
         case UNJAM:
             return SystemState.UNJAMMING;
-        case UNJAM_SHOOT:
-            return SystemState.UNJAMMING_WITH_SHOOT;
         case SHOOT:
-            return SystemState.WAITING_FOR_ALIGNMENT;
+            return SystemState.WAITING_FOR_FLYWHEEL;
         case MANUAL_FEED:
-            return SystemState.JUST_FEED;
-        case EXHAUST:
-            return SystemState.EXHAUSTING;
+            return SystemState.MANUAL_FEED;
         default:
             return SystemState.IDLE;
         }
     }
 
-    private SystemState handleExhaust() {
-        mCompressor.setClosedLoopControl(false);
-        mFeeder.setWantedState(Feeder.WantedState.EXHAUST);
-        mHopper.setWantedState(Hopper.WantedState.EXHAUST);
+    private double handleManualFeed(){
+       mFeeder.setWantedState(Feeder.WantedState.INCREMENT_FEED);
+       mIntake.setWantedState(Intake.WantedState.INTAKE);
 
-        switch (mWantedState) {
-        case UNJAM:
-            return SystemState.UNJAMMING;
-        case UNJAM_SHOOT:
-            return SystemState.UNJAMMING_WITH_SHOOT;
-        case SHOOT:
-            return SystemState.WAITING_FOR_ALIGNMENT;
-        case MANUAL_FEED:
-            return SystemState.JUST_FEED;
-        case EXHAUST:
-            return SystemState.EXHAUSTING;
-        default:
-            return SystemState.IDLE;
-        }
+        //TODO fix how this is setup (in the FEEDER class)
+
 
     }
 
-    private SystemState handleHang() {
-        mCompressor.setClosedLoopControl(false);
-        mFeeder.setWantedState(Feeder.WantedState.IDLE);
-        mHopper.setWantedState(Hopper.WantedState.IDLE);
-        mShooter.setOpenLoop(-12.0);
 
-        switch (mWantedState) {
-        case HANG:
-            return SystemState.HANGING;
-        default:
-            return SystemState.IDLE;
-        }
-    }
-
-    private double getShootingSetpointRpm(double range) {
+   private double getShootingSetpointRpm(double range) {
         if (Constants.kUseFlywheelAutoAimPolynomial) {
             return Constants.kFlywheelAutoAimPolynomial.predict(range);
         } else {
             return Constants.kFlywheelAutoAimMap.getInterpolated(new InterpolatingDouble(range)).value;
         }
     }
+
+
 
     public synchronized boolean autoSpinShooter(boolean allow_shooting) {
         final double timestamp = Timer.getFPGATimestamp();
@@ -477,7 +441,9 @@ public class Superstructure extends Subsystem {
 
     @Override
     public void stop() {
-
+        //TODO stop shooter
+        mIntake.setWantedState(Intake.WantedState.IDLE);
+        mFeeder.setWantedState(Feeder.WantedState.IDLE);
     }
 
     @Override
