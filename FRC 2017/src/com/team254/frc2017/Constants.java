@@ -181,9 +181,7 @@ public class Constants extends ConstantsBase {
     public static double kPathFollowingGoalVelTolerance = 12.0;
     public static double kPathStopSteeringDistance = 9.0;
 
-   
-   
-    
+
 
     @Override
     public String getFileLocation() {

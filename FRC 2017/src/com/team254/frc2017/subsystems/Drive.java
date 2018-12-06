@@ -1,8 +1,6 @@
 package com.team254.frc2017.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -13,19 +11,14 @@ import com.team254.frc2017.loops.Loop;
 import com.team254.frc2017.loops.Looper;
 import com.team254.lib.util.DriveSignal;
 import com.team254.lib.util.ReflectingCSVWriter;
-import com.team254.lib.util.Util;
 import com.team254.lib.util.control.Lookahead;
 import com.team254.lib.util.control.Path;
 import com.team254.lib.util.control.PathFollower;
 import com.team254.lib.util.drivers.NavX;
-import com.team254.lib.util.drivers.NidecBrushless;
-import com.team254.lib.util.drivers.NidecMotor;
+import com.team254.lib.util.drivers.NidecBrushlessThree;
 import com.team254.lib.util.math.RigidTransform2d;
 import com.team254.lib.util.math.Rotation2d;
 import com.team254.lib.util.math.Twist2d;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * This subsystem consists of the robot's drivetrain: 4 CIM motors, 4 talons, one solenoid and 2 pistons to shift gears,
@@ -33,7 +26,7 @@ import java.util.Optional;
  * control. The Drive subsystem also has several methods that handle automatic aiming, autonomous path driving, and
  * manual control.
  * 
- * @see Subsystem.java
+ *
  */
 public class Drive extends Subsystem {
 
@@ -77,7 +70,7 @@ public class Drive extends Subsystem {
    // private final CANTalon mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
    // private final Solenoid mShifter;
     
-    private final NidecBrushless mLeftMaster, mRightMaster;
+    private final NidecBrushlessThree mLeftMaster, mRightMaster;
    
     
     private final NavX mNavXBoard;
@@ -141,13 +134,13 @@ public class Drive extends Subsystem {
     private Drive() {
         // Start all Talons in open loop mode.
         
-        mLeftMaster = new NidecBrushless(
+        mLeftMaster = new NidecBrushlessThree(
                 Constants.kDriveEnablepwmPort,
                 Constants.kLeftDriveDIOpwmPort,
                 Constants.kLeftDriveDirectionpwmPort,
                 Constants.kLeftDriveEncoderAPort,
                 Constants.kLeftDriveEncoderBPort);
-        mRightMaster = new NidecBrushless(
+        mRightMaster = new NidecBrushlessThree(
                 Constants.kDriveEnablepwmPort,
                 Constants.kRightDriveDIOpwmPort,
                 Constants.kRightDriveDirectionpwmPort,

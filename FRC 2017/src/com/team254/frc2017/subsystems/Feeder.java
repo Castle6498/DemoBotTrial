@@ -1,22 +1,18 @@
 package com.team254.frc2017.subsystems;
 
-import edu.wpi.first.wpilibj.Timer;
 import com.team254.frc2017.Constants;
 import com.team254.frc2017.loops.Loop;
 import com.team254.frc2017.loops.Looper;
-import com.team254.lib.util.Util;
 import com.team254.lib.util.drivers.IRSensor;
-import com.team254.lib.util.drivers.NidecMotor;
-import com.team254.lib.util.drivers.NidecMotor.NidecControlMode;
-
-import java.util.Arrays;
+import com.team254.lib.util.drivers.NidecBrushlessThree;
+import edu.wpi.first.wpilibj.NidecBrushless;
 
 /**
  * The feeder subsystem consists of dynamo motors that are meant to send one ball at a time into the shooter.
  * There are ir sensors placed before and after the feeder to sense blockage or emptiness of the hopper.
  * The main things this subsystem has to are feed fuel and unjam
  * 
- * @see Subsystem.java
+ *
  */
 public class Feeder extends Subsystem {
     
@@ -31,13 +27,14 @@ public class Feeder extends Subsystem {
         return sInstance;
     }
 
-    private final NidecMotor mTrigger;
+    private final NidecBrushless mTriggerL;
+    private final NidecBrushless mTriggerR;
     private final IRSensor mIRInitial, mIRFinal;
     
     public Feeder() {
-        mTrigger=new NidecMotor(Constants.kFeederTriggerPort);
-        mTrigger.changeControlMode(NidecControlMode.Only_PWM);
-       
+        mTriggerL=new NidecBrushless(Constants.kFeederEnablepwmPort, Constants.kFeederTriggerOneMXPPort);
+        mTriggerR=new NidecBrushless(Constants.kFeederEnablepwmPort, Constants.kFeederTriggerTwoMXPPort);
+
         mIRInitial = new IRSensor(Constants.kFeederIRInitialPort, Constants.kFeederIRInitialMin, Constants.kFeederIRInitialMax);
         mIRFinal = new IRSensor(Constants.kFeederIRFinalPort, Constants.kFeederIRFinalMin, Constants.kFeederIRFinalMax);
        
@@ -125,12 +122,12 @@ public class Feeder extends Subsystem {
     }
 
     private SystemState handleIdle() {
-        mTrigger.set(0);
+        setMotors(0);
         return defaultStateTransfer();
     }
 
     private SystemState handleUnjamming(double now, double startStartedAt) {
-        mTrigger.set(Constants.kFeederUnjamPower);
+        setMotors(Constants.kFeederUnjamPower);
         SystemState newState = SystemState.UNJAMMING;
         if (now - startStartedAt > Constants.kFeederUnjamPeriod) {
             newState = SystemState.IDLE;
@@ -152,7 +149,7 @@ public class Feeder extends Subsystem {
     private SystemState handleIncrementalFeeding(double now, double startStartedAt) {
         SystemState newState = SystemState.INCREMENTAL_FEEDING;
         if (mStateChanged) {
-           mTrigger.set(0);
+           setMotors(0);
            if(!mIRInitial.seesBall()) {
                System.out.println("Hopper empty!");
                newState = SystemState.IDLE;
@@ -163,7 +160,7 @@ public class Feeder extends Subsystem {
         } else if(mIRFinal.seesBall()) {
             newState=SystemState.IDLE;
         }else {
-            mTrigger.set(Constants.kFeederIncrementFeedPower);
+            setMotors(Constants.kFeederIncrementFeedPower);
         }
         
         switch (mWantedState) {
@@ -180,7 +177,7 @@ public class Feeder extends Subsystem {
 
     private SystemState handleContinuousFeeding() {
         if (mStateChanged) {
-            mTrigger.set(Constants.kFeederContinuousFeedPower);
+            setMotors(Constants.kFeederContinuousFeedPower);
         }
         return defaultStateTransfer();
     }
@@ -202,6 +199,11 @@ public class Feeder extends Subsystem {
 
     @Override
     public void zeroSensors() {
+    }
+
+    public void setMotors(double power){
+        mTriggerL.set(power);
+        mTriggerR.set(-power);
     }
 
     @Override

@@ -1,15 +1,9 @@
 package com.team254.frc2017.subsystems;
 
-import edu.wpi.first.wpilibj.Timer;
 import com.team254.frc2017.Constants;
 import com.team254.frc2017.loops.Loop;
 import com.team254.frc2017.loops.Looper;
-import com.team254.lib.util.Util;
 import com.team254.lib.util.drivers.IRSensor;
-import com.team254.lib.util.drivers.NidecMotor;
-import com.team254.lib.util.drivers.NidecMotor.NidecControlMode;
-
-import java.util.Arrays;
 
 /**
  * The feeder subsystem consists of a 3.3 Nidec Brushless motor used to intake balls from the ground
