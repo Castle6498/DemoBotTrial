@@ -133,8 +133,8 @@ public class Constants extends ConstantsBase {
     
     //Intake Constants
     public static final double kIntakeUnjamPeriod = .4;
-    public static final double kIntakeUnjamPower = -.75;    
-    public static final double kIntakePower = 1.0;
+    public static final double kIntakeUnjamPower = -.25;
+    public static final double kIntakePower = .5;
    
     public static final double kHopperSensePeriod=1;
     
