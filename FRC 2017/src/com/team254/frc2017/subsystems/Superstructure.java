@@ -10,7 +10,6 @@ import com.team254.frc2017.RobotState;
 //import com.team254.frc2017.ShooterAimingParameters;
 import com.team254.frc2017.loops.Loop;
 import com.team254.frc2017.loops.Looper;
-import com.team254.lib.util.CircularBuffer;
 import com.team254.lib.util.InterpolatingDouble;
 
 
@@ -32,7 +31,7 @@ import java.util.Optional;
  * @see Intake
  *
  * @see Feeder
- * @see Shooter
+ * @see Flywheel
  *
  * @see Subsystem
  */
@@ -50,7 +49,7 @@ public class Superstructure extends Subsystem {
     private final Feeder mFeeder = Feeder.getInstance();
     private final Intake mIntake = Intake.getInstance();
  // private final Hopper mHopper = Hopper.getInstance();
- // private final Shooter mShooter = Shooter.getInstance();
+ // private final Flywheel mShooter = Flywheel.getInstance();
  // private final LED mLED = LED.getInstance();
 
     
