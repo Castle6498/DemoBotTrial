@@ -54,7 +54,8 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
     // the pwm enables the controller
     m_pwmEnable = new PWM(pwmEnableChannel);
     addChild(m_pwmEnable);
-    
+
+    //this pwm sets the direction of the motor
     m_pwmDirection = new PWM(pwmDirectionChannel);
     addChild(m_pwmDirection);
     
@@ -87,7 +88,41 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
   public double getSpeed(){
     return (encoder.getRate()*60)/(encoder.getDistancePerPulse()*100); //I dont know if this is right at all lol
   }
-  
+
+
+
+  //Reversing the sensor
+  private boolean sensorReversed=false;
+  public void reverseSensor(boolean reverse){
+    sensorReversed=reverse;
+    encoder.setReverseDirection(reverse);
+  }
+
+  public boolean getSensorReversed(){
+    return sensorReversed;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /**
    * Free the resources used by this object.
    */
@@ -99,6 +134,46 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
     m_pwmDirection.free();
   }
 
+
+
+  public enum ControlMode{
+    RPM,
+    Speed,
+    PWM
+  }
+
+  private ControlMode mControlMode = ControlMode.PWM;
+
+  public void setControlMode(ControlMode mode){
+    mControlMode = mode;
+  }
+
+  @Override
+  public void set(double speed){
+    switch(mControlMode){
+      case RPM:
+
+        break;
+      case Speed:
+
+        break;
+      case PWM:
+        setRaw(speed);
+        break;
+    }
+  }
+
+  double speedToPWM(double speed){
+    //TODO make conversion
+    return 0;
+  }
+
+  double RPMtoPWM(double rpm){
+    //TODO make conversion
+    return 0;
+  }
+
+
   /**
    * Set the PWM value.
    *
@@ -107,8 +182,7 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
    *
    * @param speed The speed value between -1.0 and 1.0 to set.
    */
-  @Override
-  public void set(double speed) {
+  public void setRaw(double speed) {
     if (!m_disabled) {
     	 m_speed = speed;
     	speed=(m_isInverted ? -speed : speed);
@@ -143,6 +217,8 @@ public class NidecBrushlessThree extends SendableBase implements SpeedController
   public boolean getInverted() {
     return m_isInverted;
   }
+
+
 
   /**
    * Write out the PID value as seen in the PIDOutput base object.
