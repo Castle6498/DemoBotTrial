@@ -37,12 +37,15 @@ public class Intake extends Subsystem {
           
     }
 
-    public static enum SystemState {
-        ACCUMULATING, //feed a ball at a time
-        UNJAMMING, //Reverses motors continuously
-        IDLE, // stop all motors
-    }   //lowering and raising just a separate thing
+    private boolean full=false;
 
+    public static enum SystemState {
+        IDLE,
+        LOWERING,
+        RAISING,
+        INTAKING,
+        LOWERED
+    }
     public static enum WantedState {
         IDLE,
         UNJAM,
